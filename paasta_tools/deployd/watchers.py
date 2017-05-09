@@ -157,9 +157,10 @@ class PublicConfigEventHandler(pyinotify.ProcessEvent):
             if service_instances:
                 self.log.info("Found config change affecting {} service instances, "
                               "now doing a staggered bounce".format(len(service_instances)))
-                service_instances = rate_limit_instances(service_instances,
-                                                         self.public_config.get_deployd_big_bounce_rate(),
-                                                         self.__class__.__name__)
+                bounce_rate = self.public_config.get_deployd_big_bounce_rate()
+                service_instances = rate_limit_instances(instances=service_instances,
+                                                         number_per_minute=bounce_rate,
+                                                         watcher_name=self.__class__.__name__)
             for service_instance in service_instances:
                 self.filewatcher.inbox_q.put(service_instance)
 
@@ -170,9 +171,9 @@ class PublicConfigEventHandler(pyinotify.ProcessEvent):
                                              soa_dir=DEFAULT_SOA_DIR)
         service_instances = []
         for service, instance in instances:
-            config = load_marathon_service_config(service,
-                                                  instance,
-                                                  self.public_config.get_cluster(),
+            config = load_marathon_service_config(service=service,
+                                                  instance=instance,
+                                                  cluster=self.public_config.get_cluster(),
                                                   soa_dir=DEFAULT_SOA_DIR)
             if config.format_marathon_app_dict()['id'] not in marathon_app_ids:
                 service_instances.append((service, instance))

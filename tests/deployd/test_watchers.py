@@ -281,13 +281,13 @@ class TestPublicConfigEventHandler(unittest.TestCase):
             ret = self.handler.get_service_instances_with_changed_id()
             assert mock_get_marathon_apps.called
             assert mock_get_services_for_cluster.called
-            calls = [mock.call('universe',
-                               'c137',
-                               'westeros-prod',
+            calls = [mock.call(service='universe',
+                               instance='c137',
+                               cluster='westeros-prod',
                                soa_dir=DEFAULT_SOA_DIR),
-                     mock.call('universe',
-                               'c138',
-                               'westeros-prod',
+                     mock.call(service='universe',
+                               instance='c138',
+                               cluster='westeros-prod',
                                soa_dir=DEFAULT_SOA_DIR)]
             mock_load_marathon_service_config.assert_has_calls(calls)
             assert ret == [('universe', 'c138')]
