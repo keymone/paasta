@@ -175,6 +175,8 @@ class TestMaintenanceWatcher(unittest.TestCase):
                                                    mock.Mock(host='host2',
                                                              app_id='/universe.c138.configsha.gitsha')]),
                                   mock.Mock(tasks=[mock.Mock(host='host1',
+                                                             app_id='/universe.c139.configsha.gitsha')]),
+                                  mock.Mock(tasks=[mock.Mock(host='host1',
                                                              app_id='/universe.c139.configsha.gitsha')])]
             mock_get_marathon_apps.return_value = mock_marathon_apps
             ret = self.watcher.get_at_risk_service_instances(['host1'])

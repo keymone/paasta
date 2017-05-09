@@ -111,11 +111,15 @@ class MaintenanceWatcher(PaastaWatcher):
         for task in at_risk_tasks:
             app_id = task.app_id.strip('/')
             service, instance, _, __ = deformat_job_id(app_id)
-            service_instances.append(ServiceInstance(service=service,
-                                                     instance=instance,
-                                                     bounce_by=int(time.time()),
-                                                     watcher=self.__class__.__name__,
-                                                     bounce_timers=None))
+            # check we haven't already added this instance,
+            # no need to add the same instance to the bounce queue
+            # more than once
+            if not any([(service, instance) == (si.service, si.instance) for si in service_instances]):
+                service_instances.append(ServiceInstance(service=service,
+                                                         instance=instance,
+                                                         bounce_by=int(time.time()),
+                                                         watcher=self.__class__.__name__,
+                                                         bounce_timers=None))
         return service_instances
 
 
